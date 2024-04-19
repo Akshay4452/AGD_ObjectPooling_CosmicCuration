@@ -13,6 +13,7 @@ namespace CosmicCuration.Player
         private PlayerScriptableObject playerScriptableObject;
         private BulletView bulletPrefab;
         private BulletScriptableObject bulletScriptableObject;
+        private BulletPool bulletPool;
 
         private WeaponMode currentWeaponMode;
         private ShootingState currentShootingState;
@@ -21,13 +22,12 @@ namespace CosmicCuration.Player
         private float currentRateOfFire;
 
 
-        public PlayerController(PlayerView playerViewPrefab, PlayerScriptableObject playerScriptableObject, BulletView bulletPrefab, BulletScriptableObject bulletScriptableObject)
+        public PlayerController(PlayerView playerViewPrefab, PlayerScriptableObject playerScriptableObject, BulletPool bulletPool)
         {
             playerView = Object.Instantiate(playerViewPrefab);
             playerView.SetController(this);
             this.playerScriptableObject = playerScriptableObject;
-            this.bulletPrefab = bulletPrefab;
-            this.bulletScriptableObject = bulletScriptableObject;
+            this.bulletPool = bulletPool;
 
             InitializeVariables();
         }
@@ -70,9 +70,9 @@ namespace CosmicCuration.Player
 
         private void HandleShooting()
         {
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
                 FireWeapon();
-            if (Input.GetKeyUp(KeyCode.Space))
+            if (Input.GetKeyUp(KeyCode.Space) || Input.GetMouseButtonDown(0))
                 currentShootingState = ShootingState.NotFiring;
         }
         private async void FireWeapon()
@@ -96,9 +96,15 @@ namespace CosmicCuration.Player
 
         private void FireBulletAtPosition(Transform fireLocation)
         {
-            BulletController bulletToFire = new BulletController(bulletPrefab, bulletScriptableObject);
-            bulletToFire.ConfigureBullet(fireLocation);
-            GameService.Instance.GetSoundService().PlaySoundEffects(SoundType.PlayerBullet);
+            BulletController bulletToFire = bulletPool.GetBullet();
+            if (bulletToFire != null)
+            {
+                bulletToFire.ConfigureBullet(fireLocation);
+                GameService.Instance.GetSoundService().PlaySoundEffects(SoundType.PlayerBullet);
+                Debug.Log("Bullet pool size: " + bulletPool.GetPoolSize());
+            }
+            else
+                Debug.LogError("Couldn't get bullet from Bullet Pool");
         }
         public void SetShieldState(ShieldState shieldStateToSet) => currentShieldState = shieldStateToSet;
 
