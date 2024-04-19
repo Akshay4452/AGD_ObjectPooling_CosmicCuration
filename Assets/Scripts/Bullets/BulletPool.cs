@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -37,7 +38,7 @@ namespace CosmicCuration.Bullets
                 }
                 else
                 {
-                    return createNewPooledBullet(); // Add new Bullet to the pool when all the bullets in pool are being used
+                    return createNewPooledBullet(); // Add new Bullet to the pool when all the bullets in pool are being used (active)
                 }
             }
         }
@@ -51,18 +52,17 @@ namespace CosmicCuration.Bullets
             return pooledBullet.BulletController;
         }
 
-        public void ReuseBullet(BulletController bulletController)
+        public int GetPoolSize() { return pooledBullets.Count; } // Need to delete later
+
+        public void ReturnBulletToPool(BulletController returnedBullet)
         {
-            PooledBullet pooledBullet = pooledBullets.Find(item => item.BulletController == bulletController);
+            PooledBullet pooledBullet = pooledBullets.Find(item => item.BulletController.Equals(returnedBullet));
             if (pooledBullet != null)
                 pooledBullet.isUsed = false;
             else
                 Debug.LogError("Pooled Bullet not found");
         }
 
-        public int GetPoolSize() { return pooledBullets.Count; } // Need to delete later
-
-        
         public class PooledBullet
         {
             public BulletController BulletController;
