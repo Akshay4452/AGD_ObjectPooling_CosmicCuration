@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -36,6 +37,15 @@ namespace CosmicCuration.Enemy
                     return createNewPooledEnemy(); // Create new enemy in pool when all the existing enemies in pool are being used
                 }
             }
+        }
+
+        public void ReturnEnemyToPool(EnemyController enemyToReturn)
+        {
+            PooledEnemy pooledEnemy = pooledEnemies.Find(item => item.EnemyController.Equals(enemyToReturn));
+            if (pooledEnemy != null)
+                pooledEnemy.isUsed = false;
+            else
+                Debug.LogError("Enemy cannot be pooled from Enemy Pool");
         }
 
         private EnemyController createNewPooledEnemy()
