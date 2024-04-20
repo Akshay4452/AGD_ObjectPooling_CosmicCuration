@@ -15,7 +15,7 @@ namespace CosmicCuration.Utilities
                 {
                     pooledItem.isUsed = true;
                     return pooledItem.Item;
-                }
+                }     
             }
             return createNewPooledItem();
         }
@@ -36,13 +36,21 @@ namespace CosmicCuration.Utilities
             throw new NotImplementedException("Child class haven't implemented createItem() method");
             // Need to override this method in child class
         }
-            
+
+        protected void ReturnItem(T itemToReturn)
+        {
+            PooledItem<T> pooledItem = pooledItems.Find(i => i.Item.Equals(itemToReturn));
+            if(pooledItem != null)
+            {
+                pooledItem.isUsed = false;
+            }
+        }
+
         public class PooledItem<T>
         {
             public T Item;
             public bool isUsed;
         }
-
     }
 }
 
