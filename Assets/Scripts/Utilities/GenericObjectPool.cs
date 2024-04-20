@@ -37,7 +37,7 @@ namespace CosmicCuration.Utilities
             // Need to override this method in child class
         }
 
-        protected void ReturnItem(T itemToReturn)
+        public void ReturnItem(T itemToReturn)
         {
             PooledItem<T> pooledItem = pooledItems.Find(i => i.Item.Equals(itemToReturn));
             if(pooledItem != null)
