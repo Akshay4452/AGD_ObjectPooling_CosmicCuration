@@ -15,6 +15,40 @@ namespace CosmicCuration.Enemy
             this.enemyView = enemyView;
             this.enemyScriptableObject = enemyScriptableObject;
         }
+
+        public EnemyController GetEnemy()
+        {
+            if(pooledEnemies.Count == 0)
+            {
+                EnemyController enemyController = createNewPooledEnemy();
+                return enemyController;
+            } 
+            else
+            {
+                PooledEnemy enemyUnusedInPool = pooledEnemies.Find(enemy => !enemy.isUsed);
+                if (enemyUnusedInPool != null)
+                {
+                    enemyUnusedInPool.isUsed = true;
+                    return enemyUnusedInPool.EnemyController;
+                }
+                else
+                {
+                    return createNewPooledEnemy(); // Create new enemy in pool when all the existing enemies in pool are being used
+                }
+            }
+        }
+
+        private EnemyController createNewPooledEnemy()
+        {
+            PooledEnemy pooledEnemy = new PooledEnemy();
+            pooledEnemy.EnemyController = new EnemyController(enemyView, enemyScriptableObject.enemyData);
+            pooledEnemy.isUsed = true;
+
+            // Add the pooled enemy into the Enemy Pool
+            pooledEnemies.Add(pooledEnemy);
+
+            return pooledEnemy.EnemyController;
+        }
         public class PooledEnemy
         {
             public EnemyController EnemyController;
