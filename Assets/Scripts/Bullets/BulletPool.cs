@@ -7,7 +7,6 @@ namespace CosmicCuration.Bullets
     {
         private BulletView bulletPrefab;
         private BulletScriptableObject bulletSO;
-        private List<PooledBullet<BulletController>> pooledBullets = new List<PooledBullet<BulletController>>();
 
         public BulletPool(BulletView bulletPrefab, BulletScriptableObject bulletSO)
         {
@@ -15,22 +14,10 @@ namespace CosmicCuration.Bullets
             this.bulletSO = bulletSO;
         }
 
-        public BulletController GetBullet()
-        {
-            return base.GetItem();
-        }
+        public BulletController GetBullet() { return GetItem(); }
 
         protected override BulletController createItem() => new BulletController(bulletPrefab, bulletSO);
 
-        public void ReturnBullet(BulletController bullet)
-        {
-            base.ReturnItem(bullet);
-        }
-
-        public class PooledBullet<BulletController>
-        {
-            public BulletController Bullet;
-            public bool isUsed;
-        }
+        public void ReturnBullet(BulletController bulletToReturn) { ReturnItem(bulletToReturn); }
     }
 }
