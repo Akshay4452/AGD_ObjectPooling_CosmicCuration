@@ -5,9 +5,14 @@ namespace CosmicCuration.VFX
 {
     public class VFXService
     {
-        private List<VFXData> vfxData = new List<VFXData>();
+        //private List<VFXData> vfxData = new List<VFXData>();
+        //private VFXData vfxData;
+        private VFXPool vfxPool;
 
-        public VFXService(VFXScriptableObject vfxScriptableObject) => vfxData = vfxScriptableObject.vfxData;
+        public VFXService(/*VFXScriptableObject vfxScriptableObject*/)
+        {
+            vfxPool = new VFXPool();
+        }
 
         public void PlayVFXAtPosition(VFXType type, Vector2 spawnPosition)
         {
